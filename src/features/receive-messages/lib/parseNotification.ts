@@ -19,6 +19,7 @@ interface WebhookBody {
     typeMessage?: string
     textMessageData?: { textMessage?: string }
     extendedTextMessageData?: { text?: string }
+    fileMessageData?: { caption?: string }
   }
 }
 
@@ -36,15 +37,32 @@ const STATUSES: Partial<Record<string, MessageStatus>> = {
   noAccount: 'failed',
 }
 
+const ATTACHMENT_LABELS: Partial<Record<string, string>> = {
+  imageMessage: 'Фото',
+  videoMessage: 'Видео',
+  audioMessage: 'Аудио',
+  documentMessage: 'Файл',
+  stickerMessage: 'Стикер',
+  locationMessage: 'Геолокация',
+  contactMessage: 'Контакт',
+}
+
+const describeAttachment = (data: NonNullable<WebhookBody['messageData']>, typeMessage: string): string => {
+  const label = `[${ATTACHMENT_LABELS[typeMessage] ?? 'Неподдерживаемое сообщение'}]`
+  const caption = data.fileMessageData?.caption
+  return caption ? `${label} ${caption}` : label
+}
+
 const extractText = (data: WebhookBody['messageData']): string | null => {
-  switch (data?.typeMessage) {
+  if (!data?.typeMessage) return null
+  switch (data.typeMessage) {
     case 'textMessage':
       return data.textMessageData?.textMessage ?? null
     case 'extendedTextMessage':
     case 'quotedMessage':
       return data.extendedTextMessageData?.text ?? null
     default:
-      return null
+      return describeAttachment(data, data.typeMessage)
   }
 }
 

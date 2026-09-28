@@ -13,7 +13,7 @@ interface MessengerPageProps {
 
 export const MessengerPage = ({ credentials }: MessengerPageProps) => {
   const activeChat = useAppSelector(selectActiveChat)
-  const problem = useConnectionProblem(credentials)
+  const problem = useConnectionProblem()
 
   return (
     <div className={`messenger${activeChat ? ' messenger--chat-open' : ''}`}>

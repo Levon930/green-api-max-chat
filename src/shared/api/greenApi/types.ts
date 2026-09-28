@@ -10,6 +10,7 @@ export interface GreenApiRequest {
   httpMethod?: 'GET' | 'POST' | 'DELETE'
   body?: unknown
   credentials?: GreenApiCredentials
+  timeout?: number
 }
 
 export interface GreenApiQueryError {

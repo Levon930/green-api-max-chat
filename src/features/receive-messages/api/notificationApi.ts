@@ -1,5 +1,7 @@
 import { baseApi } from '@/shared/api'
 
+const RESPONSE_GRACE_SECONDS = 10
+
 export interface QueuedNotification {
   receiptId: number
   body: unknown
@@ -8,7 +10,11 @@ export interface QueuedNotification {
 export const notificationApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     receiveNotification: build.query<QueuedNotification | null, number>({
-      query: (receiveTimeout) => ({ method: 'receiveNotification', suffix: `?receiveTimeout=${receiveTimeout}` }),
+      query: (receiveTimeout) => ({
+        method: 'receiveNotification',
+        suffix: `?receiveTimeout=${receiveTimeout}`,
+        timeout: (receiveTimeout + RESPONSE_GRACE_SECONDS) * 1000,
+      }),
       providesTags: ['Notification'],
     }),
 

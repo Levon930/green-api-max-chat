@@ -26,11 +26,9 @@ export const restoreSession = (): AppThunk => (dispatch) => {
 export const login =
   (credentials: Credentials): AppThunk<Promise<void>> =>
   async (dispatch) => {
-    const request = dispatch(instanceApi.endpoints.getStateInstance.initiate(credentials, { forceRefetch: true }))
-    const result = await request
-    request.unsubscribe()
+    const result = await dispatch(instanceApi.endpoints.checkCredentials.initiate(credentials, { track: false }))
 
-    const problem = result.isError ? errorMessage(result.error) : describeInstanceState(result.data)
+    const problem = 'error' in result ? errorMessage(result.error) : describeInstanceState(result.data)
     if (problem) throw new Error(problem)
 
     saveCredentials(credentials)

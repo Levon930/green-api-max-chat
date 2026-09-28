@@ -12,7 +12,7 @@ export const ChatWindow = ({ chat }: ChatWindowProps) => {
   return (
     <section className="chat" aria-label={`Чат с ${chatTitle(chat)}`}>
       <ChatHeader chat={chat} />
-      <MessageList chat={chat} />
+      <MessageList key={chat.id} chat={chat} />
       <MessageInput key={chat.id} chat={chat} />
     </section>
   )
